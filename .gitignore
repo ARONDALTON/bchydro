@@ -36,4 +36,5 @@ nosetests.xml
 
 # miscfile
 .DS_Store
-.sublime*
+*.sublime-project
+*.sublime-workspace
