@@ -34,6 +34,9 @@ nosetests.xml
 .project
 .pydevproject
 
+# Documentation
+docs/_build
+
 # miscfile
 .DS_Store
 *.sublime-project
