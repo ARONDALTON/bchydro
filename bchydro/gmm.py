@@ -1,6 +1,7 @@
 ''' Implementation of the BC Hydro model'''
 import numpy as np
 import itertools
+import model
 
 def interpolateSpectra(spectra1 , spectra2 , period1, period2):
     return spectra1
@@ -16,9 +17,6 @@ def fixPeriods(augmentedSpectra, periods, augmentedPeriods):
             idxHigh = np.nonzero(augmentedPeriods > per)[0][0]
             fixedSpectra[:, i] = interpolateSpectra(augmentedSpectra[:, idxLow] , augmentedSpectra[:, idxHigh] , augmentedPeriods[idxLow] , augmentedPeriods[idxHigh])
     return fixedSpectra
-
-def computeSpectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, modifiedPeriods):
-    return 0
 
 def augmentPeriods(periods):
     availablePeriods = np.array([0.01, 0.02, 0.05, 0.075, 0.1, 0.15, 0.2, 0.250, 0.3, 0.4, 0.5, 0.6, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.5, 10.0])
@@ -49,6 +47,6 @@ def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
     Vs30 = np.array([Vs30] * nCol).transpose()
     augmentedPeriods = np.array([augmentedPeriods] * nRow)
 
-    augmentedSpectra = np.array([[computeSpectra(mag, rrup, rhyp, evt, z, faba, vs, per) for mag, rrup, rhyp, evt, z, faba, vs, per in itertools.izip(mags, rrups, rhyps, evts, zs, fabas, vss, pers)] for mags, rrups, rhyps, evts, zs, fabas, vss, pers in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, augmentedPeriods)])
+    augmentedSpectra = np.array([[model.computeSpectra(mag, rrup, rhyp, evt, z, faba, vs, per) for mag, rrup, rhyp, evt, z, faba, vs, per in itertools.izip(mags, rrups, rhyps, evts, zs, fabas, vss, pers)] for mags, rrups, rhyps, evts, zs, fabas, vss, pers in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, augmentedPeriods)])
 
     return fixPeriods(augmentedSpectra, periods, augmentedPeriods[0]).tolist()

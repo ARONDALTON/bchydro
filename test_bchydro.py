@@ -44,3 +44,19 @@ def test_spectraLength():
 
     for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
         yield 'check_spectraLength', m, rrup, rhyp, evtype, z, faba, vs30, per
+
+def test_coefLengths():
+    assert len(bchydro.model.VLIN) == 23
+    assert len(bchydro.model.B) == 23
+    assert len(bchydro.model.T1) == 23
+    assert len(bchydro.model.T2) == 23
+    assert len(bchydro.model.T6) == 23
+    assert len(bchydro.model.T7) == 23
+    assert len(bchydro.model.T8) == 23
+    assert len(bchydro.model.T10) == 23
+    assert len(bchydro.model.T11) == 23
+    assert len(bchydro.model.T12) == 23
+    assert len(bchydro.model.T13) == 23
+    assert len(bchydro.model.T14) == 23
+    assert len(bchydro.model.T15) == 23
+    assert len(bchydro.model.T16) == 23
