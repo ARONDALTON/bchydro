@@ -37,18 +37,20 @@ def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
     periods[idx] = 0.01 # Periods less than eq to 0.01 are essentially pga. Setting this allows us to avoid errors while interpolating in log-log scale.
     augmentedPeriods = augmentPeriods(periods)
 
+    # compute R based on event type
+    R = [rrup if ev == 0 else rhyp for rrup, rhyp, ev in itertools.izip(Rrup, Rhyp, eventType)]
+
     nRow = len(M)
     nCol = len(augmentedPeriods)
 
     M = np.array([M] * nCol).transpose()
-    Rrup = np.array([Rrup] * nCol).transpose()
-    Rhyp = np.array([Rhyp] * nCol).transpose()
+    R = np.array([R] * nCol).transpose()
     eventType = np.array([eventType] * nCol).transpose()
     Z = np.array([Z] * nCol).transpose()
     Faba = np.array([Faba] * nCol).transpose()
     Vs30 = np.array([Vs30] * nCol).transpose()
     augmentedPeriods = np.array([augmentedPeriods] * nRow)
 
-    augmentedSpectra = np.array([[model.computeSpectra(mag, rrup, rhyp, evt, z, faba, vs, per) for mag, rrup, rhyp, evt, z, faba, vs, per in itertools.izip(mags, rrups, rhyps, evts, zs, fabas, vss, pers)] for mags, rrups, rhyps, evts, zs, fabas, vss, pers in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, augmentedPeriods)])
+    augmentedSpectra = np.array([[model.computeSpectra(mag, r, evt, z, faba, vs, per) for mag, r, evt, z, faba, vs, per in itertools.izip(mags, rs, evts, zs, fabas, vss, pers)] for mags, rs, evts, zs, fabas, vss, pers in itertools.izip(M, R, eventType, Z, Faba, Vs30, augmentedPeriods)])
 
     return fixPeriods(augmentedSpectra, periods, augmentedPeriods[0]).tolist()
