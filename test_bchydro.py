@@ -8,9 +8,9 @@ def test_inputLengthCheck():
     Rrup = [4 , 5, 6]
     Rhyp = [5, 6, 7]
     eventType = [0 , 1]
-    Z = [1 , 2, 3]
+    Z = [10 , 20, 30]
     Faba = [0 , 0 , 1]
-    Vs30 = [1 , 2]
+    Vs30 = [700, 200]
     periods = [1 , 2, 3 , 4]
     bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
 
@@ -22,7 +22,7 @@ def test_periodCheck():
     eventType = [0 , 1, 1]
     Z = [1 , 2, 3]
     Faba = [0 , 0 , 1]
-    Vs30 = [1 , 2, 1]
+    Vs30 = [1000 , 1500, 300]
     periods = []
     bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
 
