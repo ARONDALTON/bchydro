@@ -1,8 +1,9 @@
 '''
 BC hydro ground-motion model implementation
 '''
+import gmm
 
-def spectra():
+def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
     '''
     The function takes the source, site, and distance parameters and returns the predicted response spectra at the requested periods.
 
@@ -23,4 +24,13 @@ def spectra():
     :param periods: List of periods at which the spectra is needed.
     :type periods: list(float)
     '''
-    return 0
+
+    argumentLengths = [len(M) , len(Rrup) , len(Rhyp) , len(eventType) , len(Z) , len(Faba) , len(Vs30)]
+
+    if any([ (l != argumentLengths[0]) for l in argumentLengths]):
+        raise Exception("Argument lengths not equal")
+
+    if len(periods) == 0:
+        raise Exception("Periods argument is empty")
+
+    return gmm.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
