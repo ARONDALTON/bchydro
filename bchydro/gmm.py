@@ -3,8 +3,9 @@ import numpy as np
 import itertools
 import model
 
-def interpolateSpectra(spectra1 , spectra2 , period1, period2):
-    return spectra1
+def interpolateSpectra(spectra1 , spectra2 , period1, period2, period):
+    slope = (spectra2 - spectra1)/(np.log(period2) - np.log(period1))
+    return spectra1 + slope*(np.log(period) - np.log(period1))
 
 def fixPeriods(augmentedSpectra, periods, augmentedPeriods):
     fixedSpectra = np.zeros((augmentedSpectra.shape[0], periods.shape[0]))
@@ -15,7 +16,7 @@ def fixPeriods(augmentedSpectra, periods, augmentedPeriods):
         else:
             idxLow = np.nonzero(augmentedPeriods < per)[0][-1]
             idxHigh = np.nonzero(augmentedPeriods > per)[0][0]
-            fixedSpectra[:, i] = interpolateSpectra(augmentedSpectra[:, idxLow] , augmentedSpectra[:, idxHigh] , augmentedPeriods[idxLow] , augmentedPeriods[idxHigh])
+            fixedSpectra[:, i] = interpolateSpectra(augmentedSpectra[:, idxLow] , augmentedSpectra[:, idxHigh] , augmentedPeriods[idxLow] , augmentedPeriods[idxHigh] , per)
     return fixedSpectra
 
 def augmentPeriods(periods):
@@ -53,4 +54,6 @@ def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
 
     augmentedSpectra = np.array([[model.computeSpectra(mag, r, evt, z, faba, vs, per) for mag, r, evt, z, faba, vs, per in itertools.izip(mags, rs, evts, zs, fabas, vss, pers)] for mags, rs, evts, zs, fabas, vss, pers in itertools.izip(M, R, eventType, Z, Faba, Vs30, augmentedPeriods)])
 
-    return fixPeriods(augmentedSpectra, periods, augmentedPeriods[0]).tolist()
+    fixedSpectra = fixPeriods(augmentedSpectra, periods, augmentedPeriods[0])
+
+    return (np.exp(fixedSpectra)).tolist()
