@@ -33,6 +33,8 @@ def augmentPeriods(periods):
 
 def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
     periods = np.array(periods)
+    idx = np.nonzero(periods <= 0.01)[0]
+    periods[idx] = 0.01 # Periods less than eq to 0.01 are essentially pga. Setting this allows us to avoid errors while interpolating in log-log scale.
     augmentedPeriods = augmentPeriods(periods)
 
     nRow = len(M)
