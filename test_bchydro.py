@@ -40,7 +40,7 @@ def test_spectraLength():
     Z = [[1, 2, 3] , [1.1, 2.2] , [2.4]]
     Faba = [[0 , 0 , 1] , [0 , 0] , [1]]
     Vs30 = [[700 , 500, 200] , [800 , 400] , [760]]
-    periods = [[1 , 2], [0.1, 0.2, 0.3, 0.1, 1, 2] , [1.0, 2.0, 3.0, 4.0]]
+    periods = [[1 , 2], [0.1, 0.2, 0.3, 0.4, 1, 2] , [1.0, 2.0, 3.0, 4.1]]
 
     for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
         yield 'check_spectraLength', m, rrup, rhyp, evtype, z, faba, vs30, per
