@@ -29,7 +29,14 @@ C = 1.88
 
 C1 = 7.8
 C4 = 10
-DC1 = 0 # Find out this value
+DC1 = -0.3 # Check with por. Adrian how to interpret the text
+#They recomment -0.3 for slab events .. should we use 0 for interface?
+#They also recommed values between -0.2 to 0.2 for epistemic uncertainty
+
+PHI = 0.60
+TAU = 0.43
+SIGMA = 0.74
+SIGMASS = 0.60
 
 def fmag(mag, pIdx):
     if mag <= C1 + DC1:
@@ -64,3 +71,9 @@ def computeSpectra(mag, r, evt, z, faba, vs30, per):
     lnSa = T1[pIdx] + T4*DC1 + (T2[pIdx] + T14[pIdx]*evt + T3*(mag - 7.8)) * np.log(r + C4 * np.exp((mag - 6)*T9)) + T6[pIdx]*r + T10[pIdx]*evt + fmag(mag, pIdx) + fdepth(z, evt, pIdx) + ffaba(faba, evt, r, pIdx) + fsite(mag, r, evt, z, faba, vs30, pIdx)
 
     return lnSa
+
+def interEventSigma():
+    return TAU
+
+def intraEventSigma():
+    return PHI

@@ -56,4 +56,7 @@ def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
 
     fixedSpectra = fixPeriods(augmentedSpectra, periods, augmentedPeriods[0])
 
-    return (np.exp(fixedSpectra)).tolist()
+    intraEventSigma = np.ones(fixedSpectra.shape) * model.intraEventSigma()
+    interEventSigma = np.ones(fixedSpectra.shape) * model.interEventSigma()
+
+    return (np.exp(fixedSpectra)).tolist(), intraEventSigma.tolist(), interEventSigma.tolist()

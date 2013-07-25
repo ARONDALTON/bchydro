@@ -27,10 +27,29 @@ def test_periodCheck():
     bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
 
 def check_spectraLength(M , Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
-    spectra = bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
-    print spectra
+    spectra, phi, tau = bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
     assert len(spectra) == len(M)
     assert len(spectra[0]) == len(periods)
+
+def check_phiLength(M , Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+    spectra, phi, tau = bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
+    assert len(phi) == len(M)
+    assert len(phi[0]) == len(periods)
+
+def check_tauLength(M , Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+    spectra, phi, tau = bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
+    assert len(tau) == len(M)
+    assert len(tau[0]) == len(periods)
+
+def check_phiValues(M , Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+    spectra, phi, tau = bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
+    phiValues = [[ phiValue == 0.6 for phiValue in row] for row in phi]
+    assert all(phiValues)
+
+def check_tauValues(M , Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+    spectra, phi, tau = bchydro.spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods)
+    tauValues = [[ tauValue == 0.43 for tauValue in row] for row in tau]
+    assert all(tauValues)
 
 def test_spectraLength():
     M = [[5.5 , 6, 5] , [5, 6] , [6]]
@@ -44,6 +63,18 @@ def test_spectraLength():
 
     for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
         yield 'check_spectraLength', m, rrup, rhyp, evtype, z, faba, vs30, per
+
+    for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+        yield 'check_phiLength', m, rrup, rhyp, evtype, z, faba, vs30, per
+
+    for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+        yield 'check_tauLength', m, rrup, rhyp, evtype, z, faba, vs30, per
+
+    for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+        yield 'check_phiValues', m, rrup, rhyp, evtype, z, faba, vs30, per
+
+    for m, rrup, rhyp, evtype, z, faba, vs30, per in itertools.izip(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
+        yield 'check_tauValues', m, rrup, rhyp, evtype, z, faba, vs30, per
 
 def test_coefLengths():
     assert len(bchydro.model.VLIN) == 23

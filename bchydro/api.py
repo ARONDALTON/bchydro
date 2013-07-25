@@ -5,7 +5,7 @@ import gmm
 
 def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
     '''
-    The function takes the source, site, and distance parameters and returns the predicted response spectra at the requested periods.
+    The function takes the source, site, and distance parameters and returns the predicted response spectra, intra event sigma (:math:`\\phi`), and inter event sigma (:math:`\\tau`) at the requested periods.
 
     :param M: List of magnitudes for which the response spectra is needed.
     :type M: list(float)
