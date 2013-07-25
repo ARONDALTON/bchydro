@@ -18,6 +18,7 @@ def differentMags():
 
 def plotCoefs():
     periods = [0.01, 0.02, 0.05, 0.075, 0.1, 0.15, 0.2, 0.250, 0.3, 0.4, 0.5, 0.6, 0.75, 1.0, 1.5, 2.0, 2.5, 3.0, 4.0, 5.0, 6.0, 7.5, 10.0]
+
     plt.semilogx(periods, bchydro.model.VLIN)
     plt.ylabel('YLIN')
     plt.show()
