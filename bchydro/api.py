@@ -18,7 +18,7 @@ def spectra(M, Rrup, Rhyp, eventType, Z, Faba, Vs30, periods):
     :param Z: List of hypocentral depths for each event.
     :type Z: list(float)
     :param Faba: List with 0 for forearcs and unknown sites, and 1 for backarc sites
-    :type Faba: list(int)
+    :type Faba: list(int) 0 for forearc or unknown, 1 for backarc
     :param Vs30: List of Vs30 at the sites where the spectra is needed.
     :type Vs30: list(float)
     :param periods: List of periods at which the spectra is needed.

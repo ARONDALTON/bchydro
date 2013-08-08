@@ -29,29 +29,27 @@ C = 1.88
 
 C1 = 7.8
 C4 = 10
-DC1 = -0.3 # Check with por. Adrian how to interpret the text
-#They recomment -0.3 for slab events .. should we use 0 for interface?
-#They also recommed values between -0.2 to 0.2 for epistemic uncertainty
-
+DC11 = -0.3
+DC10 = [0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.2, 0.143682921, 0.1, 0.073696559, 0.04150375, 0, -0.05849625, -0.1, -0.155033971, -0.2, -0.2, -0.2, -0.2, -0.2, -0.2]
 PHI = 0.60
 TAU = 0.43
 SIGMA = 0.74
 SIGMASS = 0.60
 
-def fmag(mag, pIdx):
+def fmag(mag, pIdx, DC1):
     if mag <= C1 + DC1:
-        return T4*(mag - (C1 + DC1)) + T13[pIdx]*(10 - mag)**2
+        return T4*(mag - (C1 + DC1)) + T13[pIdx]*((10 - mag)**2)
     else:
-        return T5*(mag - (C1 + DC1)) + T13[pIdx]*(10 - mag)**2
+        return T5*(mag - (C1 + DC1)) + T13[pIdx]*((10 - mag)**2)
 
 def fdepth(z, evt, pIdx):
     return T11[pIdx] * (z - 60) * evt
 
 def ffaba(faba, evt, r, pIdx):
     if evt == 1:
-        return T7[pIdx] + T8[pIdx] * np.log(max(r, 85)/40.0)*faba
+        return (T7[pIdx] + T8[pIdx] * np.log(max(r, 85)/40.0))*faba
     else:
-        return T15[pIdx] + T16[pIdx] * np.log(max(r, 100)/40.0)*faba
+        return (T15[pIdx] + T16[pIdx] * np.log(max(r, 100)/40.0))*faba
 
 def fsite(mag, r, evt, z, faba, vs30, pIdx):
     vlin = VLIN[pIdx]
@@ -61,14 +59,28 @@ def fsite(mag, r, evt, z, faba, vs30, pIdx):
         return (T12[pIdx]  + B[pIdx] * N) * np.log(vs/vlin)
     else:
         pga1000 = np.exp(computeSpectra(mag, r, evt, z, faba, 1000.0, 0.01))
-        return T12[pIdx] * np.log(vs/vlin) - B[pIdx] * np.log(pga1000 + C) + B[pIdx] * np.log(pga1000 + C*(vs/vlin)**N)
+        return T12[pIdx] * np.log(vs/vlin) - B[pIdx] * np.log(pga1000 + C) + B[pIdx] * np.log(pga1000 + C*((vs/vlin)**N))
 
 def computeSpectra(mag, r, evt, z, faba, vs30, per):
 
     pIdx = np.nonzero(PERIODS == per)[0][0]
-
+    DC1 = 0
+    if evt == 1:
+        DC1 = DC11
+    else:
+        DC1 = DC10[pIdx]
     # Find out the value of dC1
-    lnSa = T1[pIdx] + T4*DC1 + (T2[pIdx] + T14[pIdx]*evt + T3*(mag - 7.8)) * np.log(r + C4 * np.exp((mag - 6)*T9)) + T6[pIdx]*r + T10[pIdx]*evt + fmag(mag, pIdx) + fdepth(z, evt, pIdx) + ffaba(faba, evt, r, pIdx) + fsite(mag, r, evt, z, faba, vs30, pIdx)
+    lnSa = T1[pIdx] + T4*DC1 + (T2[pIdx] + T14[pIdx]*evt + T3*(mag - 7.8)) * np.log(r + C4 * np.exp((mag - 6)*T9)) + T6[pIdx]*r + T10[pIdx]*evt + fmag(mag, pIdx, DC1) + fdepth(z, evt, pIdx) + ffaba(faba, evt, r, pIdx) + fsite(mag, r, evt, z, faba, vs30, pIdx)
+    #print 'For Vs30 = ', vs30
+    #print 'fmag', fmag(mag, pIdx)
+    #print 'fdepth', fdepth(z, evt, pIdx)
+    #print 'ffaba', ffaba(faba, evt, r, pIdx)
+    #print 'fsite', fsite(mag, r, evt, z, faba, vs30, pIdx), 'Vs', vs30
+    #print 'otherTerms', T1[pIdx] + T4*DC1 + (T2[pIdx] + T14[pIdx]*evt + T3*(mag - 7.8)) * np.log(r + C4 * np.exp((mag - 6)*T9)) + T6[pIdx]*r + T10[pIdx]*evt
+    #print 'T1', T1[pIdx] + T4*DC1
+    #print 'T2', (T2[pIdx] + T14[pIdx]*evt + T3*(mag - 7.8)) * np.log(r + C4 * np.exp((mag - 6)*T9))
+    #print 'T3', T6[pIdx]*r
+    #print 'lnSa', lnSa
 
     return lnSa
 
