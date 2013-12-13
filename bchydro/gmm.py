@@ -9,13 +9,21 @@ def interpolateSpectra(spectra1 , spectra2 , period1, period2, period):
 
 def fixPeriods(augmentedSpectra, periods, augmentedPeriods):
     fixedSpectra = np.zeros((augmentedSpectra.shape[0], periods.shape[0]))
+    sortedAugmented = sorted(augmentedPeriods)
+
     for i, per in enumerate(periods):
         if per in augmentedPeriods:
             fixedSpectra[:, i] = augmentedSpectra[:, 0]
             fixedSpectra[:, i] = augmentedSpectra[:, np.nonzero(augmentedPeriods == per)[0][0]]
         else:
-            idxLow = np.nonzero(augmentedPeriods < per)[0][-1]
-            idxHigh = np.nonzero(augmentedPeriods > per)[0][0]
+            idxLow = np.nonzero(sortedAugmented < per)[0][-1]
+            perLow = sortedAugmented[idxLow]
+            idxLow = np.nonzero(augmentedPeriods == perLow)[0][0]
+
+            idxHigh = np.nonzero(sortedAugmented > per)[0][0]
+            perHigh = sortedAugmented[idxHigh]
+            idxHigh = np.nonzero(augmentedPeriods == perHigh)[0][0]
+
             fixedSpectra[:, i] = interpolateSpectra(augmentedSpectra[:, idxLow] , augmentedSpectra[:, idxHigh] , augmentedPeriods[idxLow] , augmentedPeriods[idxHigh] , per)
     return fixedSpectra
 
